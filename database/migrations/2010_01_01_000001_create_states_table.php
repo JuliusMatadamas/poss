@@ -15,7 +15,12 @@ class CreateStatesTable extends Migration
     {
         Schema::create('states', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->unsignedBigInteger('country_id');
+            $table->softDeletes();
             $table->timestamps();
+
+            $table->foreign('country_id')->references('id')->on('countries');
         });
     }
 
@@ -26,6 +31,9 @@ class CreateStatesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('states');
+        Schema::table('states', function (Blueprint $table) {
+            $table->dropForeign(['country_id']);
+            $table->drop('states');
+        });
     }
 }
