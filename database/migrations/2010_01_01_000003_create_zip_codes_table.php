@@ -15,7 +15,12 @@ class CreateZipCodesTable extends Migration
     {
         Schema::create('zip_codes', function (Blueprint $table) {
             $table->id();
+            $table->string('zip_code');
+            $table->unsignedBigInteger('county_id');
+            $table->softDeletes();
             $table->timestamps();
+
+            $table->foreign('county_id')->references('id')->on('counties');
         });
     }
 
@@ -26,6 +31,9 @@ class CreateZipCodesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('zip_codes');
+        Schema::table('zip_codes', function (Blueprint $table) {
+            $table->dropForeign(['county_id']);
+            $table->drop('zip_codes');
+        });
     }
 }

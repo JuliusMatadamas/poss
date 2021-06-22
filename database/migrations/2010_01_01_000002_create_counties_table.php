@@ -15,7 +15,12 @@ class CreateCountiesTable extends Migration
     {
         Schema::create('counties', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->unsignedBigInteger('state_id');
+            $table->softDeletes();
             $table->timestamps();
+
+            $table->foreign('state_id')->references('id')->on('states');
         });
     }
 
@@ -26,6 +31,9 @@ class CreateCountiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('counties');
+        Schema::table('counties', function (Blueprint $table) {
+            $table->dropForeign(['state_id']);
+            $table->drop('counties');
+        });
     }
 }
